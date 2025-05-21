@@ -1,10 +1,10 @@
 #include "../cub3d.h"
 
-int	extract_content(t_map *map)
+void	extract_content(t_map *map)
 {
 	get_map_height(map);
 	safe_close(&map->open_fd);
-	return (fill_map_arr(map));
+	fill_map_arr(map);
 }
 
 void	get_map_height(t_map *map)
@@ -30,7 +30,7 @@ void	get_map_height(t_map *map)
 	}
 }
 
-int	fill_map_arr(t_map *map)
+void	fill_map_arr(t_map *map)
 {
 	char	**buff;
 	char	*str;
@@ -38,10 +38,10 @@ int	fill_map_arr(t_map *map)
 
 	map->open_fd = open(map->name, O_RDONLY);
 	if (map->open_fd == -1)
-		return (ft_error_return(map->name));
+		handle_error(NULL, map->name, map, NULL);
 	buff = malloc ((map->height + 1) * sizeof(char *));
 	if (!buff)
-		return (safe_close(&map->open_fd), ft_error_return("malloc failed"));
+		handle_error(NULL, "malloc failed", map, NULL);
 	skip_to_content(map);
 	i = 0;
 	while (1)
@@ -54,7 +54,7 @@ int	fill_map_arr(t_map *map)
 	}
 	buff[i] = NULL;
 	map->arr = buff;
-	return (safe_close(&map->open_fd), 0);
+	safe_close(&map->open_fd);
 }
 
 void	skip_to_content(t_map *map)

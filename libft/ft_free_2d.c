@@ -16,12 +16,16 @@ void	ft_free_2d(char ***arr)
 {
 	int	i;
 
+	if (!arr || !*arr)
+		return;
+
 	i = 0;
-	while ((*arr) && (*arr)[i])
+	while ((*arr)[i])
 	{
 		free((*arr)[i]);
+		(*arr)[i] = NULL;
 		i++;
 	}
-	if (arr)
-		free(*arr);
+	free(*arr);
+	*arr = NULL;
 }

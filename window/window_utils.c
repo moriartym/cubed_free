@@ -3,10 +3,14 @@
 void create_image_buffer(t_var *data)
 {
     data->image.img = mlx_new_image(data->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+    if (!data->image.img)
+        close_window_err(data, "Failed to create image");
     data->image.addr = mlx_get_data_addr(data->image.img,
             &data->image.bits_per_pixel,
             &data->image.line_length,
             &data->image.endian);
+    if (!data->image.addr)
+        close_window_err(data, "Failed to get image address");
 }
 
 void my_mlx_pixel_put(t_img *img, int x, int y, int color)

@@ -10,6 +10,7 @@ int close_window(t_var *data)
         // mlx_destroy_display(data->mlx);
         free(data->mlx);
     }
+    // handle_error(NULL, NULL, &data->map, data);// exit 1
     exit(0);
     return 0;
 }
@@ -38,12 +39,12 @@ int render(t_var *data)
     return (0);
 }
 
-int create_visual(t_cub *cube)
+int create_visual(t_map *map)
 {
     t_var data = {0};
 
-    data.cube = cube;
     data.state.state = INIT;
+    data.map = *map;
     init_all(&data);
     create_image_buffer(&data);
     load_textures(&data);  

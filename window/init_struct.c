@@ -29,23 +29,22 @@ void init_all(t_var *data)
     {
         data->mlx = mlx_init();
         if (!data->mlx)
-            return;
+            close_window_err(data, "mlx_init failed");
         data->win = mlx_new_window(data->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3d");
         if (!data->win)
-            return;
+            close_window_err(data, "mlx_new_window failed");
         load_enemy_gifs(data);
         load_state(data); 
-        data->map_save = ft_copy_arr(data->cube->map.arr); 
+        // data->map_save = ft_copy_arr(data->map.arr); 
     }
     // retry stilll faulty
     data->state.state = NOSTATE;
-    data->map =  data->cube->map;
-    data->map.arr = data->map_save;
+    data->last_mouse_x = -1;
+    // data->map.arr = data->map_save;
     data->move = (t_move) {0};
     data->minimap = (t_minimap) {0};
     init_player(data);
     init_sprites(data);
-    data->last_mouse_x = -1;
     place_winning_tiles(data);
 }
 

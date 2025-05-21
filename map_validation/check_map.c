@@ -15,7 +15,7 @@ void	validate_map_char(t_map *map)
 		{
 			if (!(ft_strchr(" 01NSEW\n", map->arr[i][j])))
 				handle_error("The map must be composed \
-					of only 0, 1, N, S, E, W");
+					of only 0, 1, N, S, E, W",NULL, map, NULL);
 			if (ft_strchr("NSEW", map->arr[i][j]))
 			{
 				map->xpos = j;
@@ -27,9 +27,9 @@ void	validate_map_char(t_map *map)
 		i++;
 	}
 	if (player == 0)
-		handle_error("There is no player's start position");
+		handle_error("There is no player's start position",NULL, map, NULL);
 	if (player > 1)
-		handle_error("There is mutiple player's start position");
+		handle_error("There is mutiple player's start position",NULL, map, NULL);
 }
 
 void	check_surrounding(t_map *map, int y, int x)
@@ -41,13 +41,13 @@ void	check_surrounding(t_map *map, int y, int x)
 
 	if (x == 0 || x == map->max_length - 1
 		|| y == 0 || y == map->height - 1)
-		handle_error("The map must be surrounded by walls");
+		handle_error("The map must be surrounded by walls",NULL, map, NULL);
 	left = map->arr[y - 1][x];
 	right = map->arr[y + 1][x];
 	up = map->arr[y][x - 1];
 	down = map->arr[y][x + 1];
 	if (left == 'X' || right == 'X' || up == 'X' || down == 'X')
-		handle_error("The map must be surrounded by walls");
+		handle_error("The map must be surrounded by walls",NULL, map, NULL);
 }
 
 void	change_player(t_map *map)
@@ -88,12 +88,11 @@ void	check_wall(t_map *map)
 	}
 }
 
-int	check_map(t_map *map)
+void	check_map(t_map *map)
 {
 	validate_map_char(map);
 	find_max_row_length(map);
 	replace_space(map);
 	check_wall(map);
 	change_player(map);
-	return (0);
 }

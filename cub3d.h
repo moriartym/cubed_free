@@ -152,6 +152,8 @@ typedef struct  s_map
     char	**arr;
     t_door	*doors;
 	char	*name;
+    char **temp_arr;
+    char *temp_str;
     t_id 	textures[9];
     int     open_fd;
     int		elements_set;
@@ -162,12 +164,6 @@ typedef struct  s_map
     int		width;
     int		max_length;
 }				t_map;
-
-typedef struct	cub3d
-{
-	t_map	map;
-}				t_cub;
-
 
 typedef struct s_play {
 	float px;
@@ -438,7 +434,6 @@ typedef struct s_var {
 	t_play   player;
 	t_move move;
     t_state state;
-    t_cub *cube;
 	t_gif gif;
 	t_minimap minimap;
 	t_sprite *sprites;
@@ -458,19 +453,19 @@ void safe_close(int *fd);
 /*------------------------------MAP_VALIDATION------------------------------*/
 
 // from extract.c
-int		extract_map(t_map *map);
-int		check_map_name(char *file);
+void		extract_map(t_map *map);
+void		check_map_name(char *file);
 
 // from extract_elements.c
-int		extract_elements(t_map *map);
+void		extract_elements(t_map *map);
 int		verify_id(t_map *map, char **arr, int line);
 int		verify_rgb(char *value);
 t_id	*set_id(t_id *id, textures value);
 
 // from extract_content.c
-int		extract_content(t_map *map);
+void		extract_content(t_map *map);
 void	get_map_height(t_map *map);
-int		fill_map_arr(t_map *map);
+void		fill_map_arr(t_map *map);
 void	skip_to_content(t_map *map);
 
 // from check_map_utils.c
@@ -482,23 +477,23 @@ void	replace_space(t_map *map);
 void	validate_map_char(t_map *map);
 void	check_surrounding(t_map *map, int y, int x);
 void	check_wall(t_map *map);
-int	check_map(t_map *map);
+void	check_map(t_map *map);
 void	change_player(t_map *map);
 
 /*------------------------------ERROR_HANDLING------------------------------*/
 
 // from handle_error.c
-void clean_texture_helper(t_map *map);
+void close_window_err(t_var *data, char *err);
 void clean_texture(t_map *map);
 void safe_close(int *fd);
 void clean_map(t_map *map);
-void	handle_error(char *err, t_map *map);
+void	handle_error(char *err, char *msg,t_map *map, t_var *data);
 int		element_err(int line);
 
 /*------------------------------WINDOW------------------------------*/
 
 // from window.c
-int	create_visual(t_cub *cube);
+int	create_visual(t_map *map);
 int	close_window(t_var *data);
 int render(t_var *data);
 
@@ -518,17 +513,19 @@ void place_winning_tiles(t_var *data);
 void change_to_win(t_var *data, t_bfs *bfs, int index);
 
 // from init_enemy.c
-void load_single_image(t_var *data, t_img *img, const char *path);
+void load_single_image(t_var *data, t_img *img,  char *path);
 void load_enemy_gifs(t_var *data);
 void place_enemy(t_var *data, t_bfs *bfs);
 void init_sprites(t_var *data);
 void place_enemy_helper(t_var *data, t_bfs *bfs, t_place *enemy);
 
 // from init_enemy_bfs.c
+void free_enemy_bfs(t_var *data, t_bfs *bfs);
 void init_dir(t_var *data, t_bfs *bfs);
 void init_bfs(t_var *data, t_bfs *bfs);
 void bfs_check(t_var *data, t_bfs *bfs, int nx, int ny);
 void do_bfs(t_var *data, t_bfs *bfs);
+void enemy_bfs_error(t_var *data, t_bfs *bfs, char *msg);
 
 
 /*------------------------------MINIMAP------------------------------*/

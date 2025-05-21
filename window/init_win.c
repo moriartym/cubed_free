@@ -41,11 +41,5 @@ void place_winning_tiles(t_var *data)
     } 
     else
         printf("Sorry, no winning tiles for this game.\n");
-    y = 0; 
-    while (y < data->map.height)
-    {
-        free(bfs.reachable[y]);
-        y++;
-    }
-    free(bfs.reachable);
+    free_enemy_bfs(data, &bfs);
 }

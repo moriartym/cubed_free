@@ -2,10 +2,11 @@
 
 void    load_textures(t_var *data)
 {
-    t_id *tex = data->map.textures;
+    t_id *tex;
     int i;
 
     i = 0;
+    tex = data->map.textures;
     while (i <= WEST)
     {
         if (extract_img(data->mlx, &tex[i].attr, tex[i].filename))
@@ -30,6 +31,8 @@ int extract_img(void *mlx, t_img *attr, char *filename)
         // return (ft_error_return("mlx_xpm_file_to_image failed"));
 
     attr->addr = mlx_get_data_addr(attr->img, &attr->bits_per_pixel, &attr->line_length, &attr->endian);
+    if (!attr->addr)
+        // clean this latrer
     return (0);
 }
 

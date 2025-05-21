@@ -1,32 +1,29 @@
 #include "../cub3d.h"
 
-int	extract_elements(t_map *map)
+void	extract_elements(t_map *map)
 {
-	char	*line;
-	char	**arr;
 	int		i;
 	
 	i = 1;
 	while (1)
 	{
-		line = get_next_line(map->open_fd);
-		if (!line)
+		map->temp_str = get_next_line(map->open_fd);
+		if (!map->temp_str)
 			break ;
-		arr = ft_split(line, ' ');
-		if (!arr)
-			return (free(line), ft_error_return("malloc failed"));
-		if (verify_id(map, arr, i) == 1)
-			return (ft_free_2d(&arr), free(line), 1);
-		ft_free_2d(&arr);
-		free(line);
+		map->temp_arr = ft_split(map->temp_str, ' ');
+		if (!map->temp_arr)
+			handle_error(NULL, "malloc failed", map, NULL);
+		if (verify_id(map, map->temp_arr, i) == 1)
+			handle_error(NULL, NULL, map, NULL);
+		ft_free_2d(&map->temp_arr);
+		ft_free_ptr((void **)&map->temp_str);
 		if (map->elements_set == 6)
 			break ;
 		i++;
 	}
 	if (map->elements_set != 6)
-		return (ft_error_return("Element error"));
+		handle_error("Error when opening file\n", map->name, map, NULL);
 	map->content_start = i;
-	return (0);
 }
 
 int	verify_id(t_map *map, char **arr, int line)
@@ -53,7 +50,7 @@ int	verify_id(t_map *map, char **arr, int line)
 		return (element_err(line), 1);
 	id->filename = ft_substr(arr[1], 0, ft_strlen(arr[1]) - (arr[1][ft_strlen(arr[1]) - 1] == '\n'));
 	if (!id->filename)
-		return (ft_error_return("malloc failed"), 1);
+		handle_error(NULL, "malloc failed", map, NULL);
 	map->elements_set++;
 	return (0);
 }

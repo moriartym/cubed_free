@@ -17,5 +17,6 @@
 #define XK_m              46
 #define XK_c              8
 #define XK_o              31
+#define XK_r 27
 
 #endif

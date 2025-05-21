@@ -77,5 +77,6 @@ char	**ft_copy_arr(char **arr);
 char	**ft_split_space(char *arg);
 int		ft_is_whitespace(char c);
 int		ft_range(int num, int min, int max);
+void ft_free_ptr(void **ptr);
 
 #endif

@@ -26,7 +26,7 @@ void	adjust_map_length(char **map_row, t_map *map)
 		return ;
 	new_row = malloc (sizeof(char *) * map->max_length + 1);
 	if (!new_row)
-		handle_error("malloc error");
+		handle_error(NULL, "malloc error", map, NULL);
 	ft_memcpy(new_row, *map_row, len);
 	free(*map_row);
 	if (new_row[len - 1] == '\n')
