@@ -1,0 +1,6 @@
+CRASH WHEN RETRY
+Win place
+Tidy code and structure
+Valgrind
+Fix Door on minimap
+Fix Door behaves
