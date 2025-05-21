@@ -9,41 +9,38 @@ void    load_textures(t_var *data)
     tex = data->map.textures;
     while (i <= WEST)
     {
-        if (extract_img(data->mlx, &tex[i].attr, tex[i].filename))
+        if (extract_img(data->mlx, &tex[i].attr, tex[i].filename, data))
             close_window(data);
         i++;
     }
     while (i <= CEILING)
     {
-        extract_rgb(&tex[i].color, tex[i].filename);
+        extract_rgb(&tex[i].color, tex[i].filename, data);
         i++;
     }
-    extract_img(data->mlx, &tex[DOOR_C].attr, "./textures/doors/door_close.xpm");
-    extract_img(data->mlx, &tex[DOOR_O].attr, "./textures/doors/door_open.xpm");
-    extract_rgb(&tex[DOOR_S].color, "242,185,179");
+    extract_img(data->mlx, &tex[DOOR_C].attr, "./textures/doors/door_close.xpm", data);
+    extract_img(data->mlx, &tex[DOOR_O].attr, "./textures/doors/door_open.xpm" , data);
+    extract_rgb(&tex[DOOR_S].color, "242,185,179" ,data);
 }
 
-int extract_img(void *mlx, t_img *attr, char *filename)
+int extract_img(void *mlx, t_img *attr, char *filename, t_var *data)
 {
     attr->img = mlx_xpm_file_to_image(mlx, filename, &attr->width, &attr->height);
     if (!attr->img)
-        exit(1);
-        // return (ft_error_return("mlx_xpm_file_to_image failed"));
-
+        handle_error("mlx_xpm_file_to_image failed", filename, &data->map, data);
     attr->addr = mlx_get_data_addr(attr->img, &attr->bits_per_pixel, &attr->line_length, &attr->endian);
     if (!attr->addr)
-        // clean this latrer
+        handle_error("mlx_get_data_addr failed", filename, &data->map, data);
     return (0);
 }
 
-int    extract_rgb(int *color, char *rgb)
+int    extract_rgb(int *color, char *rgb , t_var *data)
 {
     char    **colors;
 
     colors = ft_split(rgb, ',');
 	if (!colors)
-		return (ft_error_return("malloc failed"));
-
+        handle_error(NULL, "malloc failed", &data->map, data);
     *color = (ft_atoi(colors[0]) << 16) | (ft_atoi(colors[1]) << 8) | ft_atoi(colors[2]);
     ft_free_2d(&colors);
     return (0);

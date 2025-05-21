@@ -89,5 +89,4 @@ void draw_rays(t_var *data)
         ray.ra = normalize_radians(ray.ra);
         ray.r++;
     }
-    draw_sprites(data);
 }

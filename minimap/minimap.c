@@ -72,6 +72,8 @@ void clamp_map(t_var *data)
         data->minimap_offset_y = data->map.height - MINIMAP_TILE;
 }
 
+
+
 void create_minimap(t_var *data)
 {
     int x;
@@ -79,7 +81,7 @@ void create_minimap(t_var *data)
 
     y = 0;
     data->minimap.tile_size = MINIMAP_SIZE / MINIMAP_TILE;
-    map_shift(data);
+    map_shift(data); 
     clamp_map(data);
     while (y < MINIMAP_TILE)
     {

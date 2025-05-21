@@ -1,33 +1,5 @@
 #include "../cub3d.h"
 
-void free_enemy_bfs(t_var *data, t_bfs *bfs)
-{
-    int y;
-
-    ft_free_ptr((void **)&bfs->queue_x);
-    ft_free_ptr((void **)&bfs->queue_y);
-    if (!bfs->reachable)
-        return;
-	y = 0;
-	while (y < data->map.height)
-	{
-		if (bfs->reachable[y])
-		{
-			free(bfs->reachable[y]);
-			bfs->reachable[y] = NULL;
-		}
-		y++;
-	}
-	free(bfs->reachable);
-	bfs->reachable = NULL;
-}
-
-void enemy_bfs_error(t_var *data, t_bfs *bfs, char *msg)
-{
-    free_enemy_bfs(data, bfs);
-    close_window_err(data, msg);
-}
-
 void init_dir(t_var *data, t_bfs *bfs)
 {
     bfs->dirs[0][0] = 0;

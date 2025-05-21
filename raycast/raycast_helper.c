@@ -42,13 +42,13 @@ void vertical_dof(t_var* data, t_ray* ray)
 {
     if (data->map.arr[(int)data->player.py / TILE_SIZE][(int)data->player.px / TILE_SIZE] == DOORH_CLOSE)
     {
-        if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra > M_PI)
+        if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra > PI)
         {
             ray->rx -= ray->xo;
             ray->ry -= ray->yo;
             ray->dof -= 1;
         }
-        else if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= M_PI)
+        else if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= PI)
         {
             ray->rx -= ray->xo;
             ray->ry -= ray->yo;
@@ -112,13 +112,13 @@ void horizontal_dof(t_var* data, t_ray* ray)
 {
     if (data->map.arr[(int)data->player.py / TILE_SIZE][(int)data->player.px / TILE_SIZE] == DOORH_CLOSE)
     {
-        if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra > M_PI)
+        if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra > PI)
         {
             ray->rx -= ray->xo;
             ray->ry -= ray->yo;
             ray->dof -= 1;
         }
-        else if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= M_PI)
+        else if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= PI)
         {
             ray->rx -= ray->xo;
             ray->ry -= ray->yo;

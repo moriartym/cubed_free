@@ -1,24 +1,5 @@
 #include "../cub3d.h"
 
-void load_single_image(t_var *data, t_img *img, char *path)
-{
-    img->img = mlx_xpm_file_to_image(data->mlx, (char *)path, &img->width, &img->height);
-    if (!img->img)
-    {
-        ft_putstr_fd("Failed to load image: ", STDERR_FILENO);
-        ft_putstr_fd(path, STDERR_FILENO);
-        ft_putstr_fd("\n", STDERR_FILENO);
-        close_window_err(data, NULL);
-    }
-    img->addr = mlx_get_data_addr(img->img, &img->bits_per_pixel, &img->line_length, &img->endian);
-    if (!img->addr)
-    {
-        ft_putstr_fd("Failed to get image data address: ", STDERR_FILENO);
-        ft_putstr_fd(path, STDERR_FILENO);
-        ft_putstr_fd("\n", STDERR_FILENO);
-        close_window_err(data, NULL);
-    }
-}
 void load_enemy_gifs(t_var *data)
 {
     load_single_image(data, &data->gif.zero,  "textures/enemy/hangy-0.xpm");
@@ -105,15 +86,22 @@ void place_enemy(t_var *data, t_bfs *bfs)
 void init_sprites(t_var *data)
 {
     t_bfs bfs;
-    int y;
+    int x;
 
     bfs = (t_bfs){0};
     srand(time(NULL));
     do_bfs(data, &bfs);
     data->num_sprites = bfs.empty_spaces / 30;
-    data->sprites = malloc(sizeof(t_sprite) * data->num_sprites + 1);
+    data->sprites = malloc(sizeof(t_sprite) * (data->num_sprites + 1));
     if (!data->sprites)
         enemy_bfs_error(data, &bfs, "malloc error");
+    x = 0;
+    while (x <= data->num_sprites)
+    {
+        data->sprites[x] = (t_sprite){0};
+        data->sprites[x].is_unstucking = 1;
+        x++;
+    }
     place_enemy(data, &bfs);    
     free_enemy_bfs(data, &bfs);
     // debug

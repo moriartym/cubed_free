@@ -78,5 +78,6 @@ char	**ft_split_space(char *arg);
 int		ft_is_whitespace(char c);
 int		ft_range(int num, int min, int max);
 void ft_free_ptr(void **ptr);
+void ft_free_2d_ptr(void ***ptr, int y);
 
 #endif

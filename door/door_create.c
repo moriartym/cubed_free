@@ -1,12 +1,12 @@
 #include "../cub3d.h"
 
-t_door *new_door(int x, int y, char *tile)
+t_door *new_door(t_var *data, int x, int y, char *tile)
 {
     t_door *new;
     
     new = malloc(sizeof(t_door));
     if (!new)
-        return (NULL);
+        handle_error(NULL, "malloc error", &data->map, data);
     new->idX = x;
     new->idY = y;
     if (*tile == DOORH_CLOSE || *tile == DOORH_OPEN)
@@ -33,9 +33,7 @@ void add_door(t_var *data, int x, int y, char *tile)
     t_door *new;
     t_door *cur;
 
-    new = new_door(x, y, tile);
-    if (!new)
-        ft_error_exit("malloc failed");
+    new = new_door(data, x, y, tile);
     if (data->map.doors == NULL)
     {
         data->map.doors = new;
@@ -62,7 +60,7 @@ void delete_door(t_var *data, int x, int y)
                 data->map.doors = cur->next;
             else
                 prev->next = cur->next;
-            free(cur);
+		    ft_free_ptr((void **)&cur);
             break ;
         }
         prev = cur;
@@ -75,6 +73,7 @@ void create_door(t_var *data)
     char *tile;
     int tile_in_front_x;
     int tile_in_front_y;
+    float angle;
 
     tile_in_front_x = get_front_tile_x(data);
     tile_in_front_y = get_front_tile_y(data);
@@ -84,8 +83,8 @@ void create_door(t_var *data)
         tile = &data->map.arr[tile_in_front_y][tile_in_front_x];
         if (*tile == '0')
         {
-            float angle = normalize_radians(data->player.pa);
-            if ((angle > M_PI / 4 && angle < 3 * M_PI / 4) || (angle > 5 * M_PI / 4 && angle < 7 * M_PI / 4))
+            angle = normalize_radians(data->player.pa);
+            if ((angle > PI / 4 && angle < 3 * PI / 4) || (angle > 5 * PI / 4 && angle < 7 * PI / 4))
                 *tile = DOORH_CLOSE;
             else
                 *tile = DOORV_CLOSE;

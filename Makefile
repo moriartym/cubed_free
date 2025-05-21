@@ -18,6 +18,10 @@ SRCS_NORMAL = get_next_line/get_next_line.c \
 		map_validation/check_map.c \
 		map_validation/check_map_utils.c \
 		error_handling/handle_error.c \
+		error_handling/handle_error_map.c \
+		error_handling/handle_error_utils.c \
+		error_handling/handle_error_bfs.c \
+		error_handling/handle_error_data.c \
 		window/window.c \
 		window/window_utils.c \
 		window/init_struct.c \

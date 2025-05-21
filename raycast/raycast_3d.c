@@ -25,15 +25,15 @@ void    init_tile(t_var *data, t_ray *ray, t_tex *tile)
     if (ray->sideH == 1)
     {
         tile->tx = (int)(ray->rx) % TILE_SIZE;
-        if (ray->ra > M_PI)
+        if (ray->ra > PI)
             tile->tx = TILE_SIZE - tile->tx - 1;
-        if (ray->ra <= M_PI && ray->hitTypeH != '1')
+        if (ray->ra <= PI && ray->hitTypeH != '1')
             tile->tx = TILE_SIZE - tile->tx - 1;
     }
     else
     {
         tile->tx = (int)(ray->ry) % TILE_SIZE;
-        if (ray->ra > M_PI/2 && ray->ra < 1.5 * M_PI && ray->hitTypeH == '1')
+        if (ray->ra > PI/2 && ray->ra < 1.5 * PI && ray->hitTypeH == '1')
             tile->tx = TILE_SIZE - tile->tx - 1;
     }
     tile->tx = tile->tx * TILE_SIZE_TEXTURE / TILE_SIZE;

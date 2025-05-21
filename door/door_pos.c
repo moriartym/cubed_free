@@ -5,7 +5,7 @@ void translate_ray(t_ray *ray, int side, char c)
     float dy;
     if (side == 1 && (c == DOORH_CLOSE || c == DOORH_OPEN))
     {
-        if (ray->ra <= M_PI)
+        if (ray->ra <= PI)
             dy = (ray->my * TILE_SIZE + (TILE_SIZE - 4) / 2) - ray->ry;
         else
             dy = (ray->my * TILE_SIZE + (TILE_SIZE - 4) / 2 + 4) - ray->ry;
@@ -14,7 +14,7 @@ void translate_ray(t_ray *ray, int side, char c)
     }
     else if (side == 0 && (c == DOORV_CLOSE || c == DOORV_OPEN))
     {
-        if (ray->ra > M_PI/2 && ray->ra < 1.5 * M_PI)
+        if (ray->ra > PI/2 && ray->ra < 1.5 * PI)
             dy = (ray->mx * TILE_SIZE + (TILE_SIZE - 4) / 2 + 4) - ray->rx;
         else
             dy = (ray->mx * TILE_SIZE + (TILE_SIZE - 4) / 2) - ray->rx;
@@ -41,7 +41,7 @@ bool doorv_from_side_check(t_ray *ray, t_door *cur, int side, char c)
     float dx;
     if ((c == DOORV_CLOSE || c == DOORV_OPEN) && side == 1)
     {
-        if (ray->ra > M_PI/2 && ray->ra < 1.5 * M_PI)
+        if (ray->ra > PI/2 && ray->ra < 1.5 * PI)
             dx = cur->xEnd - ray->rx;
         else
             dx = cur->xStart - ray->rx;
@@ -63,7 +63,7 @@ bool doorh_from_side_check(t_ray *ray, t_door *cur, int side, char c)
     float dy;
     if ((c == DOORH_CLOSE || c == DOORH_OPEN) && side == 0)
     {
-        if (ray->ra <= M_PI)
+        if (ray->ra <= PI)
             dy = cur->yStart - ray->ry;
         else
             dy = cur->yEnd - ray->ry;

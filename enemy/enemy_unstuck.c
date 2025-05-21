@@ -21,15 +21,16 @@ void ebfs_five(t_direction *step,t_enemy_bfs *bfs)
     step->dy = bfs->py - bfs->start_y;
 }
 
-t_direction find_first_step_to_player(char **map, t_enemy_bfs *bfs)
+t_direction find_first_step_to_player(t_var *data, t_enemy_bfs *bfs)
 {
     t_direction step;
 
-    ebfs_one(bfs);
-    ebfs_two(bfs);
+    ebfs_one(bfs, data);
+    ebfs_two(bfs, data);
     ebfs_three(bfs);
-    ebfs_four(map, bfs);
+    ebfs_four(data->map.arr, bfs);
     ebfs_five(&step, bfs);
+    free_ebfs(bfs);
     return step;
 }
 
@@ -39,13 +40,13 @@ void unstuck_move(t_var *data, t_sprite *sp)
     t_direction dir;
 
     bfs = (t_enemy_bfs){0};
-    bfs.goal_x = (int)(data->player.px / 32);
-    bfs.goal_y = (int)(data->player.py / 32);
+    bfs.goal_x = (int)(data->player.px / TILE_SIZE);
+    bfs.goal_y = (int)(data->player.py / TILE_SIZE);
     bfs.width = data->map.width;
     bfs.height = data->map.height;
     bfs.start_x = sp->spx;
     bfs.start_y = sp->spy;
-    dir = find_first_step_to_player(data->map.arr, &bfs);
+    dir = find_first_step_to_player(data, &bfs);
     if (dir.dx == 1)
         enemy_right(data, sp);
     else if (dir.dx == -1)

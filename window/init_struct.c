@@ -1,5 +1,17 @@
 #include "../cub3d.h"
 
+void init_minimap_offset(t_var *data)
+{
+    int player_tile_x;
+    int player_tile_y;
+
+    player_tile_x = (int)(data->player.px / TILE_SIZE);
+    player_tile_y = (int)(data->player.py / TILE_SIZE);
+    data->minimap_offset_x = player_tile_x - MINIMAP_TILE / 2;
+    data->minimap_offset_y = player_tile_y - MINIMAP_TILE / 2;
+    clamp_map(data);
+}
+
 void init_player(t_var *data)
 {
     player_start(data, data->map.ypos, data->map.xpos);
@@ -29,10 +41,10 @@ void init_all(t_var *data)
     {
         data->mlx = mlx_init();
         if (!data->mlx)
-            close_window_err(data, "mlx_init failed");
+            handle_error(NULL, "mlx_init failed", &data->map, data);        
         data->win = mlx_new_window(data->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3d");
         if (!data->win)
-            close_window_err(data, "mlx_new_window failed");
+            handle_error(NULL, "mlx_new_window failed", &data->map, data);
         load_enemy_gifs(data);
         load_state(data); 
         // data->map_save = ft_copy_arr(data->map.arr); 
@@ -44,6 +56,7 @@ void init_all(t_var *data)
     data->move = (t_move) {0};
     data->minimap = (t_minimap) {0};
     init_player(data);
+    init_minimap_offset(data);
     init_sprites(data);
     place_winning_tiles(data);
 }

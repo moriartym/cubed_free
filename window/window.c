@@ -2,15 +2,8 @@
 
 int close_window(t_var *data)
 {
-    if (data->mlx && data->win)
-        mlx_destroy_window(data->mlx, data->win);
-    if (data->mlx)
-    {
-        /* UNCOMMENT BEFORE SUBMISSION */
-        // mlx_destroy_display(data->mlx);
-        free(data->mlx);
-    }
-    // handle_error(NULL, NULL, &data->map, data);// exit 1
+    printf("Thanks for playing, bye bye! 👋🎮😊\n");
+    handle_error_noexit(NULL, NULL, &data->map, data);
     exit(0);
     return 0;
 }
@@ -24,6 +17,7 @@ int render(t_var *data)
         show_win_screen(data);
     else if (data->state.state == RETRY)
     {
+        // still broken
         printf("retry\n");
         init_all(data);
     }
@@ -33,6 +27,7 @@ int render(t_var *data)
         create_minimap(data);
         draw_player(data);
         draw_rays(data);
+        draw_sprites(data);
         draw_enemies_minimap(data);
         mlx_put_image_to_window(data->mlx, data->win, data->image.img, 0, 0);
     }
@@ -41,13 +36,15 @@ int render(t_var *data)
 
 int create_visual(t_map *map)
 {
-    t_var data = {0};
+    t_var data;
 
+    data = (t_var){0};
     data.state.state = INIT;
     data.map = *map;
     init_all(&data);
     create_image_buffer(&data);
     load_textures(&data);  
+
     mlx_loop_hook(data.mlx, render, &data);
     mlx_hook(data.win, DestroyNotify, StructureNotifyMask, &close_window, &data);
     mlx_hook(data.win, KeyPress, KeyPressMask, &handle_keypress, &data);

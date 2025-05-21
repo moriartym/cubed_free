@@ -1,5 +1,19 @@
 #include "../cub3d.h"
 
+void win(t_var *data)
+{
+    int px;
+    int py;
+
+    px = (int)(data->player.px / TILE_SIZE);
+    py = (int)(data->player.py / TILE_SIZE);
+    if (data->map.arr[py][px] == '8')
+    {
+        printf("🎉 You win!\nPress R to play again\n");
+        data->state.state = WIN;
+    }
+}
+
 void change_to_win(t_var *data, t_bfs *bfs, int index)
 {
     int i;

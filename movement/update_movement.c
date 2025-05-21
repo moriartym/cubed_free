@@ -54,6 +54,7 @@ void movement_ws(t_var *data, t_movestat *movestat)
 {
     float nextX;
     float nextY;
+    
     if (data->move.move_w)
     {
         nextX = data->player.px + data->player.pdx;
@@ -100,20 +101,6 @@ void movement_da(t_var *data, t_movestat *movestat, int strafe_ipx, int strafe_i
             data->player.px += data->player.pdy;
         if (is_valid_movement(data, data->map.arr[strafe_ipy][movestat->ipx], data->player.px, nextY))
             data->player.py -= data->player.pdx;
-    }
-}
-
-void win(t_var *data)
-{
-    int px;
-    int py;
-
-    px = (int)(data->player.px / TILE_SIZE);
-    py = (int)(data->player.py / TILE_SIZE);
-    if (data->map.arr[py][px] == '8')
-    {
-        printf("🎉 You win!\nPress R to play again\n");
-        data->state.state = WIN;
     }
 }
 

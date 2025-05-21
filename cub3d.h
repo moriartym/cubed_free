@@ -59,7 +59,7 @@
 #define TILE_SIZE  32
 #define TILE_SIZE_TEXTURE  64
 
-#define PI  3.14159265359
+#define PI  3.141592653589793238462643383279502884197
 #define P2  (PI / 2)
 #define P3  (3 * P2)
 
@@ -119,7 +119,7 @@ typedef struct s_img
 typedef struct	s_identifier
 {
 	textures	direction;
-	char		*filename;			// need to be freed
+	char		*filename;		
 	t_img		attr;
 	int			color;
 }				t_id;
@@ -452,7 +452,7 @@ void safe_close(int *fd);
 
 /*------------------------------MAP_VALIDATION------------------------------*/
 
-// from extract.c
+// from extract_map.c
 void		extract_map(t_map *map);
 void		check_map_name(char *file);
 
@@ -483,12 +483,33 @@ void	change_player(t_map *map);
 /*------------------------------ERROR_HANDLING------------------------------*/
 
 // from handle_error.c
-void close_window_err(t_var *data, char *err);
-void clean_texture(t_map *map);
-void safe_close(int *fd);
+void handle_error_noexit(char *err, char *msg, t_map *map, t_var *data);
+void	handle_error(char *err, char *msg, t_map *map, t_var *data);
+
+// from handle_error_map.c
+int	element_err(int line);
 void clean_map(t_map *map);
-void	handle_error(char *err, char *msg,t_map *map, t_var *data);
-int		element_err(int line);
+void clean_temp(t_map *map);
+void clean_texture(t_map *map);
+
+// from handle_error_data.c
+void close_mlx(t_var *data);
+void clean_data(t_var *data);
+void clean_data_texture(t_map *map, t_var *data);
+void free_state_images(t_var *data);
+void free_enemy_gifs(t_var *data);
+
+// from handle_error_utils.c
+void free_single_img(void **img_ptr, t_var *data);
+void safe_close(int *fd);
+void	free_all_door(t_var *data);
+
+// from handle_error_bfs.c
+void free_enemy_bfs(t_var *data, t_bfs *bfs);
+void enemy_bfs_error(t_var *data, t_bfs *bfs, char *msg);
+void free_ebfs(t_enemy_bfs *bfs);
+void enemy_move_bfs_error(t_var *data, t_enemy_bfs *bfs, char *msg);
+
 
 /*------------------------------WINDOW------------------------------*/
 
@@ -501,8 +522,10 @@ int render(t_var *data);
 void init_player(t_var *data);
 void init_sprites(t_var *data);
 void init_all(t_var *data);
+void init_minimap_offset(t_var *data);
 
 // from window_utils.c
+void load_single_image(t_var *data, t_img *img,  char *path);
 void my_mlx_pixel_put(t_img *img, int x, int y, int color);
 void create_image_buffer(t_var *data);
 void show_lose_screen(t_var *data);
@@ -511,22 +534,20 @@ void show_win_screen(t_var *data);
 // from init_win.c
 void place_winning_tiles(t_var *data);
 void change_to_win(t_var *data, t_bfs *bfs, int index);
+void win(t_var *data);
 
 // from init_enemy.c
-void load_single_image(t_var *data, t_img *img,  char *path);
 void load_enemy_gifs(t_var *data);
 void place_enemy(t_var *data, t_bfs *bfs);
+void forbidden_enemy(t_var *data, t_bfs *bfs);
 void init_sprites(t_var *data);
 void place_enemy_helper(t_var *data, t_bfs *bfs, t_place *enemy);
 
 // from init_enemy_bfs.c
-void free_enemy_bfs(t_var *data, t_bfs *bfs);
 void init_dir(t_var *data, t_bfs *bfs);
 void init_bfs(t_var *data, t_bfs *bfs);
 void bfs_check(t_var *data, t_bfs *bfs, int nx, int ny);
 void do_bfs(t_var *data, t_bfs *bfs);
-void enemy_bfs_error(t_var *data, t_bfs *bfs, char *msg);
-
 
 /*------------------------------MINIMAP------------------------------*/
 
@@ -548,8 +569,6 @@ void player_location(t_var *data, t_drawp *drawp);
 
 // from movement_helper.c
 void mouse_state(t_var *data);
-void create_door(t_var *data);
-void open_door(t_var *data);
 int get_front_tile_x(t_var *data);
 int get_front_tile_y(t_var *data);
 
@@ -591,21 +610,31 @@ bool is_wall(t_map *map, int x, int y);
 
 // from textures.c
 void    load_textures(t_var *data);
-int extract_img(void *mlx, t_img *attr, char *filename);
-int    extract_rgb(int *color, char *rgb);
+int extract_img(void *mlx, t_img *attr, char *filename, t_var *data);
+int    extract_rgb(int *color, char *rgb, t_var *data);
 t_img *get_texture(t_var *data, t_ray *ray);
 int    get_color(int x, int y, t_img *tex);
 
-// from doorpos.c
+
+/*------------------------------DOOR------------------------------*/
+//from door_create.c
+t_door *new_door(t_var *data, int x, int y, char *tile);
+void add_door(t_var *data, int x, int y, char *tile);
+void delete_door(t_var *data, int x, int y);
+void create_door(t_var *data);
+void open_door(t_var *data);
+
+// from door_pos.c
 void translate_ray(t_ray *ray, int side, char c);
 bool is_door_side(t_door *cur, t_ray *ray, int side, char c);
 bool doorv_from_side_check(t_ray *ray, t_door *cur, int side, char c);
 bool doorh_from_side_check(t_ray *ray, t_door *cur, int side, char c);
 bool is_door(t_map *map, t_ray *ray, int side);
 
-// from dooralpha.c
+// from door_alpha.c
 int check_door_alpha(t_var *data, t_ray ray, int side);
 int check_alpha(t_ray ray, t_tex tile, t_img *tex);
+
 
 /*------------------------------ENEMY------------------------------*/
 
@@ -624,12 +653,12 @@ int enemy_down(t_var *data, t_sprite *sp);
 
 // from enemy_unstuck.c
 void ebfs_five(t_direction *step,t_enemy_bfs *bfs);
-t_direction find_first_step_to_player(char **map, t_enemy_bfs *bfs);
+t_direction find_first_step_to_player(t_var *data, t_enemy_bfs *bfs);
 void unstuck_move(t_var *data, t_sprite *sp);
 
 // from enemy_unstuck_helper.c
-void ebfs_one(t_enemy_bfs *bfs);
-void ebfs_two(t_enemy_bfs *bfs);
+void ebfs_one(t_enemy_bfs *bfs, t_var *data);
+void ebfs_two(t_enemy_bfs *bfs, t_var *data);
 void ebfs_three(t_enemy_bfs *bfs);
 void ebfs_four_helper(char **map,t_enemy_bfs *bfs);
 void ebfs_four(char **map, t_enemy_bfs *bfs);
