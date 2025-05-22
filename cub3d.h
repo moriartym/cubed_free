@@ -85,13 +85,13 @@
 
 /*------------------------------STRUCT------------------------------*/
 
-typedef enum {
+typedef enum state{
     INIT,
     WIN,
     LOSE,
     NOSTATE,
     RETRY
-} t_num;
+} state;
 
 typedef enum	textures
 {
