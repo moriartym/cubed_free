@@ -2,7 +2,8 @@
 
 void handle_error_noexit(char *err, char *msg, t_map *map, t_var *data)
 {
-	ft_putstr_fd("Error\n", 2);
+	if (msg || err)
+		ft_putstr_fd("Error\n", 2);
 	if (err)
 	{
 		ft_putstr_fd(err, 2);

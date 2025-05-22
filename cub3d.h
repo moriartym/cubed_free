@@ -395,20 +395,16 @@ typedef struct s_enemy_bfs {
     int *queue_y;
     int front;
     int rear;
-
     bool **visited;
     int **prev_x;
     int **prev_y;
-
     int dir[4][2];
-
     int width;
     int height;
     int goal_x;
     int goal_y;
 	int start_x;
 	int start_y;
-
     int size;
     int x;
     int y;
@@ -452,7 +448,6 @@ typedef struct s_var {
 	struct timeval last_anim_time;
 } t_var;
 
-void safe_close(int *fd);
 
 /*------------------------------MAP_VALIDATION------------------------------*/
 
