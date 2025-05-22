@@ -7,7 +7,7 @@ void win(t_var *data)
 
     px = (int)(data->player.px / TILE_SIZE);
     py = (int)(data->player.py / TILE_SIZE);
-    if (data->map.arr[py][px] == '8')
+    if (data->map.arr[py][px] == WIN_BLOCK)
     {
         printf("🎉 You win!\nPress R to play again\n");
         data->state.state = WIN;
@@ -33,7 +33,7 @@ void change_to_win(t_var *data, t_bfs *bfs, int index)
             {
                 x = (int) data->player.px / TILE_SIZE;
                 y = (int) data->player.py / TILE_SIZE - 5;
-                data->map.arr[y][x] = '8';
+                data->map.arr[y][x] = WIN_BLOCK;
                 data->win_sprite.x = x * TILE_SIZE + 0.5 * TILE_SIZE;
                 data->win_sprite.y = y * TILE_SIZE + 0.5 * TILE_SIZE;
                 return ;

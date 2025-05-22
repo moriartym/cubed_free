@@ -31,7 +31,7 @@ bool is_valid_movement(t_var *data, char tile, float nextX, float nextY)
     t_door *cur;
     float margin = 0.0;
 
-    if (tile == '0' || tile == '8' || tile == DOORH_OPEN || tile == DOORV_OPEN)
+    if (tile == '0' || tile == WIN_BLOCK || tile == DOORH_OPEN || tile == DOORV_OPEN)
         return (true);
     else if (tile == '1')
         return (false);
