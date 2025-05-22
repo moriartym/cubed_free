@@ -39,7 +39,8 @@ void close_mlx(t_var *data)
 	}
     if (data->mlx)
     {
-        mlx_destroy_display(data->mlx);
+		/* uncomment upon submission */
+        // mlx_destroy_display(data->mlx);
         free(data->mlx);
 		data->mlx = NULL;
     }

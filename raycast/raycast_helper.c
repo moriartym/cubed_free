@@ -1,13 +1,15 @@
 #include "../cub3d.h"
 
-bool is_wall(t_map *map, int x, int y)
+bool is_wall(t_map *map, int x, int y, int notWall)
 {
+    if (notWall)
+        return (false);
     if (y < 0 || y >= map->height || map->arr[y] == NULL)
         return false;
     if (x < 0 || x >= (int)ft_strlen(map->arr[y]))
         return false;
     char c = map->arr[y][x];
-    return (c == '1' || c == '8');
+    return (c == '1');
 }
 
 void cast_vertical(t_var* data, t_ray* ray)
@@ -15,6 +17,7 @@ void cast_vertical(t_var* data, t_ray* ray)
     ray->disV = 100000;
     ray->dof = 0;
     ray->tan = - tan(ray->ra);
+    ray->cur_tile = 0;
     if (cos(ray->ra) > 0.001)
     {
         ray->rx = ((int)(data->player.px) / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
@@ -33,28 +36,14 @@ void cast_vertical(t_var* data, t_ray* ray)
     {
         ray->rx = data->player.px;
         ray->ry = data->player.py;
-        ray->dof = 8;
+        ray->dof = data->map.width;
     }
     vertical_dof(data, ray);
 }
 
 void vertical_dof(t_var* data, t_ray* ray)
 {
-    if (data->map.arr[(int)data->player.py / TILE_SIZE][(int)data->player.px / TILE_SIZE] == DOORH_CLOSE)
-    {
-        if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra > PI)
-        {
-            ray->rx -= ray->xo;
-            ray->ry -= ray->yo;
-            ray->dof -= 1;
-        }
-        else if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= PI)
-        {
-            ray->rx -= ray->xo;
-            ray->ry -= ray->yo;
-            ray->dof -= 1;
-        }
-    }
+    adjust_hit_tile(data, ray);
     while (ray->dof < data->map.width)
     {
         ray->mx = (int)(ray->rx) / TILE_SIZE;
@@ -62,7 +51,7 @@ void vertical_dof(t_var* data, t_ray* ray)
         ray->oriX = ray->rx;
         ray->oriY = ray->ry;
         ray->sideV = 0;
-        if (is_wall(&data->map, ray->mx, ray->my) || (is_door(&data->map, ray, 0) && check_door_alpha(data, *ray, 0) == 1))
+        if (is_wall(&data->map, ray->mx, ray->my, ray->cur_tile) || (is_door(&data->map, ray, 0) && check_door_alpha(data, *ray, 0) == 1))
         {
             if (ray->hitTypeV != 'S')
                 ray->hitTypeV = data->map.arr[ray->my][ray->mx];
@@ -77,6 +66,7 @@ void vertical_dof(t_var* data, t_ray* ray)
             ray->ry = ray->oriY + ray->yo;
             ray->dof += 1;
         }
+        ray->cur_tile = 0;
     }
 }
 
@@ -85,6 +75,7 @@ void cast_horizontal(t_var* data, t_ray* ray)
     ray->disH = 100000;
     ray->dof = 0;
     ray->tan =  1 / ray->tan;
+    ray->cur_tile = 0;
     if (sin(ray->ra) < -0.001)
     {
         ray->ry = ((int)(data->player.py) / TILE_SIZE) * TILE_SIZE - 0.0001;
@@ -103,28 +94,14 @@ void cast_horizontal(t_var* data, t_ray* ray)
     {
         ray->rx = data->player.px;
         ray->ry = data->player.py;
-        ray->dof = 8;
+        ray->dof = data->map.width;
     }
     horizontal_dof(data, ray);
 }
 
 void horizontal_dof(t_var* data, t_ray* ray)
 {
-    if (data->map.arr[(int)data->player.py / TILE_SIZE][(int)data->player.px / TILE_SIZE] == DOORH_CLOSE)
-    {
-        if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra > PI)
-        {
-            ray->rx -= ray->xo;
-            ray->ry -= ray->yo;
-            ray->dof -= 1;
-        }
-        else if (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= PI)
-        {
-            ray->rx -= ray->xo;
-            ray->ry -= ray->yo;
-            ray->dof -= 1;
-        }
-    }
+    adjust_hit_tile(data, ray);
     while (ray->dof < data->map.height)
     {
         ray->mx = (int)(ray->rx) / TILE_SIZE;
@@ -132,7 +109,7 @@ void horizontal_dof(t_var* data, t_ray* ray)
         ray->oriX = ray->rx;
         ray->oriY = ray->ry;
         ray->sideH = 1;
-        if (is_wall(&data->map, ray->mx, ray->my) || (is_door(&data->map, ray, 1) && check_door_alpha(data, *ray, 1) == 1))
+        if (is_wall(&data->map, ray->mx, ray->my, ray->cur_tile) || (is_door(&data->map, ray, 1) && check_door_alpha(data, *ray, 1) == 1))
         {
             if (ray->hitTypeH != 'S')
                 ray->hitTypeH = data->map.arr[ray->my][ray->mx];
@@ -144,6 +121,36 @@ void horizontal_dof(t_var* data, t_ray* ray)
             ray->rx = ray->oriX + ray->xo;
             ray->ry = ray->oriY + ray->yo;
             ray->dof += 1;
+        }
+        ray->cur_tile = 0;
+    }
+}
+
+void adjust_hit_tile(t_var *data, t_ray *ray)
+{
+    char cur;
+    
+    cur = data->map.arr[(int)data->player.py / TILE_SIZE][(int)data->player.px / TILE_SIZE];
+    if (cur == DOORH_CLOSE)
+    {
+        if ((data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && ray->ra >= M_PI) ||
+            (data->player.py - ((int)data->player.py / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && ray->ra <= M_PI))
+        {
+            ray->rx -= ray->xo;
+            ray->ry -= ray->yo;
+            ray->dof -= 1;
+            ray->cur_tile = 1;
+        }
+    }
+    else if (cur == DOORV_CLOSE)
+    {
+        if ((data->player.px - ((int)data->player.px / TILE_SIZE * TILE_SIZE) > (TILE_SIZE - DOORWIDTH) / 2 && (ray->ra > M_PI/2 && ray->ra < 1.5 * M_PI)) ||
+            (data->player.px - ((int)data->player.px / TILE_SIZE * TILE_SIZE) < (TILE_SIZE - DOORWIDTH) / 2 && !(ray->ra > M_PI/2 && ray->ra < 1.5 * M_PI)))
+        {
+            ray->rx -= ray->xo;
+            ray->ry -= ray->yo;
+            ray->dof -= 1;
+            ray->cur_tile = 1;
         }
     }
 }

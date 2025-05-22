@@ -31,7 +31,11 @@ void change_to_win(t_var *data, t_bfs *bfs, int index)
                 i++;
             if (i == index)
             {
+                x = (int) data->player.px / TILE_SIZE;
+                y = (int) data->player.py / TILE_SIZE - 5;
                 data->map.arr[y][x] = '8';
+                data->win_sprite.x = x * TILE_SIZE + 0.5 * TILE_SIZE;
+                data->win_sprite.y = y * TILE_SIZE + 0.5 * TILE_SIZE;
                 return ;
             }
             x++;
@@ -56,4 +60,16 @@ void place_winning_tiles(t_var *data)
     else
         printf("Sorry, no winning tiles for this game.\n");
     free_enemy_bfs(data, &bfs);
+}
+
+void draw_win(t_var *data)
+{
+    t_edraw draw;
+
+    draw = (t_edraw){0};
+    init_enemy_draw(data, &draw);
+    if (enemy_size(data, &draw, &data->win_sprite))
+        return ;
+    draw.cur_img = &data->map.textures[WIN_TILE].attr;
+    screen_draw(data, &draw);
 }

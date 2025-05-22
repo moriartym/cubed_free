@@ -6,18 +6,18 @@ void translate_ray(t_ray *ray, int side, char c)
     if (side == 1 && (c == DOORH_CLOSE || c == DOORH_OPEN))
     {
         if (ray->ra <= PI)
-            dy = (ray->my * TILE_SIZE + (TILE_SIZE - 4) / 2) - ray->ry;
+            dy = (ray->my * TILE_SIZE + (TILE_SIZE - DOORWIDTH) / 2) - ray->ry;
         else
-            dy = (ray->my * TILE_SIZE + (TILE_SIZE - 4) / 2 + 4) - ray->ry;
+            dy = (ray->my * TILE_SIZE + (TILE_SIZE - DOORWIDTH) / 2 + DOORWIDTH) - ray->ry;
         ray->rx += ray->xo * dy / ray->yo;
         ray->ry += dy;
     }
     else if (side == 0 && (c == DOORV_CLOSE || c == DOORV_OPEN))
     {
         if (ray->ra > PI/2 && ray->ra < 1.5 * PI)
-            dy = (ray->mx * TILE_SIZE + (TILE_SIZE - 4) / 2 + 4) - ray->rx;
+            dy = (ray->mx * TILE_SIZE + (TILE_SIZE - DOORWIDTH) / 2 + DOORWIDTH) - ray->rx;
         else
-            dy = (ray->mx * TILE_SIZE + (TILE_SIZE - 4) / 2) - ray->rx;
+            dy = (ray->mx * TILE_SIZE + (TILE_SIZE - DOORWIDTH) / 2) - ray->rx;
         ray->ry += ray->yo * dy / ray->xo;
         ray->rx += dy;
     }

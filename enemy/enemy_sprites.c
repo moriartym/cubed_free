@@ -12,11 +12,18 @@ int is_player_caught(t_sprite *sp, t_play *player, float radius)
     return dist < radius;
 }
 
-bool is_cell_valid(t_var *data, int x, int y)
+bool is_cell_valid(t_var *data, float x, float y)
 {
-    if (x < 0 || x >= data->map.width || y < 0 || y >= data->map.height)
+    int ix;
+    int iy;
+    char tile;
+
+    ix = (int)x / TILE_SIZE;
+    iy = (int)y / TILE_SIZE;
+    if (ix < 0 || ix >= data->map.width || iy < 0 || iy >= data->map.height)
         return false;
-    return (data->map.arr[y][x] != '1' && data->map.arr[y][x] != '2');
+    tile = data->map.arr[iy][ix];
+    return (is_valid_movement(data, tile, x, y));
 }
 
 void resolve_enemy_dist(t_var *data, t_sprite *sp, t_sprite *other)
@@ -36,13 +43,13 @@ void resolve_enemy_dist(t_var *data, t_sprite *sp, t_sprite *other)
         sp_new_y = sp->y - sp->adjust_y;
         other_new_x = other->x + sp->adjust_x;
         other_new_y = other->y + sp->adjust_y;
-        if (is_cell_valid(data, (int)sp_new_x/TILE_SIZE, (int)sp->y/TILE_SIZE))
+        if (is_cell_valid(data, sp_new_x, sp->y))
             sp->x = sp_new_x;
-        if (is_cell_valid(data, (int)sp->x/TILE_SIZE, (int)sp_new_y/TILE_SIZE))
+        if (is_cell_valid(data, sp->x, sp_new_y))
             sp->y = sp_new_y;
-        if (is_cell_valid(data, (int)other_new_x/TILE_SIZE, (int)other->y/TILE_SIZE))
+        if (is_cell_valid(data, other_new_x, other->y))
             other->x = other_new_x;
-        if (is_cell_valid(data, (int)other->x/TILE_SIZE, (int)other_new_y/TILE_SIZE))
+        if (is_cell_valid(data, other->x, other_new_y))
             other->y = other_new_y;
     }
 }
@@ -76,10 +83,10 @@ void move_enemy_towards_player(t_var *data, t_sprite *sp)
     sp->margin = ENEMY_MARGIN;
     sp->spx = (int)(sp->x / TILE_SIZE);
     sp->spy = (int)(sp->y / TILE_SIZE);
-    sp->spx_left = (int)((sp->x - sp->speed - sp->margin) / TILE_SIZE);
-    sp->spx_right = (int)((sp->x + sp->speed + sp->margin) / TILE_SIZE);
-    sp->spy_up = (int)((sp->y - sp->speed - sp->margin) / TILE_SIZE);
-    sp->spy_down = (int)((sp->y + sp->speed + sp->margin) / TILE_SIZE);
+    sp->spx_left = sp->x - sp->speed - sp->margin;
+    sp->spx_right = sp->x + sp->speed + sp->margin;
+    sp->spy_up = sp->y - sp->speed - sp->margin;
+    sp->spy_down = sp->y + sp->speed + sp->margin;
     if (sp->is_unstucking)
     {
         unstuck_move(data, sp);

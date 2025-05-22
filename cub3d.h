@@ -31,16 +31,16 @@
 
 /*------------------------------MACRO------------------------------*/
 
-# define MAC 0
-#   define WINDOW_WIDTH 1920
-#   define WINDOW_HEIGHT 1088
-# define MINIMAP_SIZE 256
-# define ENEMY_SPEED 0.25f
+# define MAC 1
+// #   define WINDOW_WIDTH 1920
+// #   define WINDOW_HEIGHT 1088
+// # define MINIMAP_SIZE 256
+// # define ENEMY_SPEED 0.25f
 
-// # define MINIMAP_SIZE 128
-// #define WINDOW_WIDTH 960
-// #define WINDOW_HEIGHT 544
-// # define ENEMY_SPEED 0.15f
+# define MINIMAP_SIZE 128
+#define WINDOW_WIDTH 960
+#define WINDOW_HEIGHT 544
+# define ENEMY_SPEED 0.15f
 
 #define PLAYER_COLOR 0x00FF0000
 #define RAYCAST_COLOR 0x0000FF00
@@ -49,6 +49,7 @@
 #define DOOR_OPEN_COLOR 0xA52A2A
 #define EMPTY_COLOR 0x404040
 #define WIN_COLOR 0xFFD700
+#define DOOR_SIDE_COLOR "242,185,179"
 
 # define MINIMAP_TILE 8
 
@@ -102,7 +103,8 @@ typedef enum	textures
 	CEILING,
 	DOOR_O,
 	DOOR_C,
-	DOOR_S
+	DOOR_S,
+    WIN_TILE
 }				textures;
 
 typedef struct s_img
@@ -154,7 +156,7 @@ typedef struct  s_map
 	char	*name;
     char **temp_arr;
     char *temp_str;
-    t_id 	textures[9];
+    t_id 	textures[10];
     int     open_fd;
     int		elements_set;
 	int		content_start;
@@ -240,10 +242,10 @@ typedef struct s_sprite {
     float lil_margin;
     int spx;
     int spy;
-    int spx_left;
-    int spx_right;
-    int spy_up;
-    int spy_down;
+    float spx_left;
+    float spx_right;
+    float spy_up;
+    float spy_down;
 	int is_unstucking;
 } t_sprite;
 
@@ -295,6 +297,7 @@ typedef struct s_ray {
 	char hitTypeV;
 	float oriX;
 	float oriY;
+    int cur_tile;
 } t_ray;
 
 typedef struct s_edraw {
@@ -437,6 +440,7 @@ typedef struct s_var {
 	t_gif gif;
 	t_minimap minimap;
 	t_sprite *sprites;
+    t_sprite win_sprite; // add this
 	struct timeval last_time;
 	int last_mouse_x;
 	int mouse_state;
@@ -535,6 +539,7 @@ void show_win_screen(t_var *data);
 void place_winning_tiles(t_var *data);
 void change_to_win(t_var *data, t_bfs *bfs, int index);
 void win(t_var *data);
+void draw_win(t_var *data);
 
 // from init_enemy.c
 void load_enemy_gifs(t_var *data);
@@ -573,6 +578,7 @@ int get_front_tile_x(t_var *data);
 int get_front_tile_y(t_var *data);
 
 // from update_movement.c
+bool is_valid_movement(t_var *data, char tile, float nextX, float nextY);
 void update_movement(t_var *data);
 void movement_init(t_var *data, t_movestat *movestat);
 void movement_ws(t_var *data, t_movestat *movestat);
@@ -606,7 +612,8 @@ void cast_vertical (t_var* data, t_ray* ray);
 void vertical_dof(t_var* data, t_ray* ray);
 void cast_horizontal (t_var *data, t_ray * ray);
 void horizontal_dof(t_var* data, t_ray* ray);
-bool is_wall(t_map *map, int x, int y);
+bool is_wall(t_map *map, int x, int y, int notWall);
+void adjust_hit_tile(t_var *data, t_ray *ray);
 
 // from textures.c
 void    load_textures(t_var *data);
@@ -640,7 +647,7 @@ int check_alpha(t_ray ray, t_tex tile, t_img *tex);
 
 // from enemy_sprites.c
 int is_player_caught(t_sprite *sp, t_play *player, float radius);
-bool is_cell_valid(t_var *data, int x, int y);
+bool is_cell_valid(t_var *data, float x, float y);
 void resolve_enemy_dist(t_var *data, t_sprite *sp, t_sprite *other);
 void resolve_enemy_collisions(t_var *data, t_sprite *sp);
 void move_enemy_towards_player(t_var *data, t_sprite *sp);
@@ -681,6 +688,5 @@ void screen_rgba(t_var *data, t_edraw *draw);
 void screen_draw_helper(t_var *data, t_edraw *draw);
 void screen_draw(t_var *data, t_edraw *draw);
 void draw_sprites(t_var *data);
-
 
 #endif

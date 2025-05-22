@@ -9,8 +9,7 @@ void    load_textures(t_var *data)
     tex = data->map.textures;
     while (i <= WEST)
     {
-        if (extract_img(data->mlx, &tex[i].attr, tex[i].filename, data))
-            close_window(data);
+        extract_img(data->mlx, &tex[i].attr, tex[i].filename, data);
         i++;
     }
     while (i <= CEILING)
@@ -18,9 +17,10 @@ void    load_textures(t_var *data)
         extract_rgb(&tex[i].color, tex[i].filename, data);
         i++;
     }
+    extract_img(data->mlx,&tex[WIN_TILE].attr, "./textures/tiles/sayuri.xpm", data);
     extract_img(data->mlx, &tex[DOOR_C].attr, "./textures/doors/door_close.xpm", data);
     extract_img(data->mlx, &tex[DOOR_O].attr, "./textures/doors/door_open.xpm" , data);
-    extract_rgb(&tex[DOOR_S].color, "242,185,179" ,data);
+    extract_rgb(&tex[DOOR_S].color, DOOR_SIDE_COLOR ,data);
 }
 
 int extract_img(void *mlx, t_img *attr, char *filename, t_var *data)

@@ -6,7 +6,6 @@ int get_lineH(float dist, float pa, float ra)
 
     dist *= cos(normalize_radians(pa - ra));
     lineH = (TILE_SIZE * WINDOW_HEIGHT) / dist;
-
     return (lineH);
 }
 
