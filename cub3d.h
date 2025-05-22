@@ -86,7 +86,6 @@
 /*------------------------------STRUCT------------------------------*/
 
 typedef enum state{
-    INIT,
     WIN,
     LOSE,
     NOSTATE,
@@ -385,7 +384,6 @@ typedef struct s_bfs {
     bool **reachable;
     int front;
     int rear;
-
 	int **prev_y;
 	int **prev_x;
 } t_bfs;
@@ -424,10 +422,16 @@ typedef struct s_state
     int state;
 } t_state;
 
+typedef struct s_save // clean this
+{
+    t_sprite *sprites;
+    char **map;
+} t_save;
+
 typedef struct s_var {
     void *mlx;
     void *win;
-    char **map_save;
+    t_save save;
 	t_map	map;
 	t_img   image;
 	t_play   player;
@@ -548,6 +552,10 @@ void init_dir(t_var *data, t_bfs *bfs);
 void init_bfs(t_var *data, t_bfs *bfs);
 void bfs_check(t_var *data, t_bfs *bfs, int nx, int ny);
 void do_bfs(t_var *data, t_bfs *bfs);
+
+// from init_retry.c
+void copy_sprites_save(t_var *data);
+void re_init(t_var *data);
 
 /*------------------------------MINIMAP------------------------------*/
 
@@ -683,5 +691,7 @@ void screen_rgba(t_var *data, t_edraw *draw);
 void screen_draw_helper(t_var *data, t_edraw *draw);
 void screen_draw(t_var *data, t_edraw *draw);
 void draw_sprites(t_var *data);
+
+void print_map_and_enemies(t_var *data);
 
 #endif

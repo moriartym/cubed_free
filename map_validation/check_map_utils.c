@@ -57,7 +57,6 @@ void	replace_space(t_map *map)
 			j++;
 		}
 		adjust_map_length(&map->arr[i], map);
-		printf("%s", map->arr[i]); // DEBUG
 		i++;
 	}
 }

@@ -34,31 +34,27 @@ void load_state(t_var *data)
     }
 }
 
-
 void init_all(t_var *data)
 {
-    if (data->state.state == INIT)
-    {
-        data->mlx = mlx_init();
-        if (!data->mlx)
-            handle_error(NULL, "mlx_init failed", &data->map, data);        
-        data->win = mlx_new_window(data->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3d");
-        if (!data->win)
-            handle_error(NULL, "mlx_new_window failed", &data->map, data);
-        load_enemy_gifs(data);
-        load_state(data); 
-        // data->map_save = ft_copy_arr(data->map.arr); 
-    }
-    // retry stilll faulty
-    data->state.state = NOSTATE;
-    data->last_mouse_x = -1;
-    // data->map.arr = data->map_save;
     data->move = (t_move) {0};
     data->minimap = (t_minimap) {0};
+    data->state.state = NOSTATE;
+    data->last_mouse_x = -1;
+    data->mlx = mlx_init();
+    if (!data->mlx)
+        handle_error(NULL, "mlx_init failed", &data->map, data);        
+    data->win = mlx_new_window(data->mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "cub3d");
+    if (!data->win)
+        handle_error(NULL, "mlx_new_window failed", &data->map, data);
+    load_enemy_gifs(data);
+    load_state(data); 
     init_player(data);
     init_minimap_offset(data);
     init_sprites(data);
     place_winning_tiles(data);
+    data->save.map = ft_copy_arr(data->map.arr);
+    if (!data->save.map)
+        handle_error(NULL, "malloc failed", &data->map, data);
 }
 
 

@@ -49,6 +49,8 @@ void place_enemy_helper(t_var *data, t_bfs *bfs, t_place *enemy)
             {
                 bfs->reachable[enemy->y][enemy->x] = false;
                 bfs->empty_spaces--;
+                data->save.sprites[enemy->count].x = enemy->x * 32 + 16;
+                data->save.sprites[enemy->count].y = enemy->y * 32 + 16;
                 data->sprites[enemy->count].x = enemy->x * 32 + 16;
                 data->sprites[enemy->count].y = enemy->y * 32 + 16;
                 enemy->count++;
@@ -95,16 +97,18 @@ void init_sprites(t_var *data)
     data->sprites = malloc(sizeof(t_sprite) * (data->num_sprites + 1));
     if (!data->sprites)
         enemy_bfs_error(data, &bfs, "malloc error");
+    data->save.sprites = malloc(sizeof(t_sprite) * (data->num_sprites + 1)); // new check this
+    if (!data->sprites)
+        enemy_bfs_error(data, &bfs, "malloc error");
     x = 0;
     while (x <= data->num_sprites)
     {
         data->sprites[x] = (t_sprite){0};
-        data->sprites[x].is_unstucking = 1;
+        data->sprites[x] = (t_sprite){0};
+        data->save.sprites[x].is_unstucking = 1;
+        data->save.sprites[x].is_unstucking = 1;
         x++;
     }
     place_enemy(data, &bfs);    
     free_enemy_bfs(data, &bfs);
-    // debug
-    for (int i = 0; i < data->num_sprites; i++) 
-        printf("Enemy %d: x = %f, y = %f\n", i, data->sprites[i].x, data->sprites[i].y);
 }

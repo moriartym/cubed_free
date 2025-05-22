@@ -28,6 +28,7 @@ SRCS_NORMAL = get_next_line/get_next_line.c \
 		window/init_win.c \
 		window/init_enemy.c \
 		window/init_enemy_bfs.c \
+		window/init_retry.c \
 		minimap/minimap.c \
 		player/player.c \
 		movement/movement.c \

@@ -45,6 +45,7 @@ void close_mlx(t_var *data)
 		data->mlx = NULL;
     }
 }
+
 void clean_data(t_var *data)
 {
 	free_enemy_gifs(data);
@@ -53,5 +54,7 @@ void clean_data(t_var *data)
 	free_single_img(&data->image.img, data);
 	clean_data_texture(&data->map, data);
 	free_all_door(data);
+	ft_free_2d(&data->save.map);
+	ft_free_ptr((void **)&data->save.sprites);
 	close_mlx(data);
 }

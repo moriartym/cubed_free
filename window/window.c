@@ -8,7 +8,6 @@ int close_window(t_var *data)
     return 0;
 }
 
-
 int render(t_var *data)
 {
     if (data->state.state == LOSE)
@@ -17,9 +16,8 @@ int render(t_var *data)
         show_win_screen(data);
     else if (data->state.state == RETRY)
     {
-        // still broken
-        printf("retry\n");
-        init_all(data);
+        re_init(data);
+        print_map_and_enemies(data);//DEBUG
     }
     else
     {
@@ -40,12 +38,12 @@ int create_visual(t_map *map)
     t_var data;
 
     data = (t_var){0};
-    data.state.state = INIT;
     data.map = *map;
     init_all(&data);
+    // DEBUG
+    print_map_and_enemies(&data);
     create_image_buffer(&data);
     load_textures(&data);  
-
     mlx_loop_hook(data.mlx, render, &data);
     mlx_hook(data.win, DestroyNotify, StructureNotifyMask, &close_window, &data);
     mlx_hook(data.win, KeyPress, KeyPressMask, &handle_keypress, &data);

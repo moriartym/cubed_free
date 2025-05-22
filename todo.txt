@@ -1,6 +1,6 @@
-CRASH WHEN RETRY
-Win place
-Tidy code and structure
-Valgrind
-Fix Door on minimap
-Fix Door behaves
+FIX ENEMY & DOOR
+SPLIT NORMAL AND BONUS
+CHECK MAP PARSING
+BIG MAP
+FIX MINIMAP DOOR
+FIX WINNING TILES ON MINIMAP
